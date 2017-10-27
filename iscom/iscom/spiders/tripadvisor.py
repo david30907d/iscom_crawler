@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-import scrapy, functools
+import scrapy, functools, time
 from bs4 import BeautifulSoup
 from iscom.items import TripadvisorItem
 from selenium import webdriver
@@ -13,7 +13,8 @@ class TripadvisorSpider(scrapy.Spider):
     def parse(self, response):
         self.driver.get(response.url)
         res = BeautifulSoup(self.driver.page_source)
-        for i in res.select('.attraction_element'):
+        for i in res.select('.attraction_clarity_cell'):
+            time.sleep(30)
             yield scrapy.Request('http://'+self.allowed_domains[0] + i.select('a')[0]['href'], self.parse_detail)
 
     def parse_detail(self, response):
