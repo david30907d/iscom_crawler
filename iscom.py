@@ -1,21 +1,32 @@
 from KCM.__main__ import KCM
-import json, sys
+import json, sys, requests
 k = KCM('cht', './ptt', uri='mongodb://172.17.0.11:27017')
 # k.removeDB()
 # k.main()
 name = json.load(open('name.json','r'))
+name2add = json.load(open('台灣所有景點的地址.json', 'r'))
 
-tmp = [i for i in k.get(sys.argv[1], 10000) if i[0] in name and len(i[0]) > 2 ][:15]
-touristSpot2location = json.load(open('景點2地址.json', 'r'))
-if sys.argv[1] not in touristSpot2location:
-	print(tmp)
-else:
-	city = touristSpot2location[sys.argv[1]]
-	result = []
-	for i in tmp:
-		if i[0] in touristSpot2location and touristSpot2location[i[0]] == city:
-			result.append(i)
-	for i in tmp:
-		if i not in result:
-			result.append(i)
-	print(result)
+query = sys.argv[1]
+tmp = [i for i in k.get(query, 10000) if i[0] in name and len(i[0]) > 2 ][:int(sys.argv[2])]
+
+distance = []
+for i in tmp:
+    try:
+        res = requests.get('https://maps.googleapis.com/maps/api/distancematrix/json?units=imperial&origins={}&destinations={}&key=AIzaSyB20qKjF1ePtq9t1luvFd-433J41anlDGU'.format(name2add[query], name2add[i[0]])).json()
+        if res['rows'][0]['elements'][0]['status'] == 'OK':
+            distance.append((i[0], res['rows'][0]['elements'][0]['distance']['value']))
+    except Exception as e:
+        pass
+distance = sorted(distance, key=lambda x:x[1])[:int(sys.argv[3])]
+print(tmp[:int(sys.argv[3])])
+print(distance)
+
+hybrid = []
+for i, j in zip(tmp, distance):
+    if i[0] == j[0]:
+        hybrid.append(i)
+    else:
+        hybrid.append(i)
+        hybrid.append(j)
+
+print(hybrid[:int(sys.argv[3])*2])
