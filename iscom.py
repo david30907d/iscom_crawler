@@ -38,31 +38,38 @@ distance = sorted(distance, key=lambda x:x[1])[:int(sys.argv[3])]
 print(distance)
 
 
-print('\nHybrid方法排序,距離 : correlation = 9999 : 1\n')
-result = hybrid(1, 999999)
-print(sorted(result.items(), key=lambda x:-x[1])[:int(sys.argv[3])])
+print('\nHybrid方法排序,距離 : correlation = 2 : 8\n')
+result = hybrid(2, 8)
+result = sorted(result.items(), key=lambda x:-x[1])[:int(sys.argv[3])]
+print(result)
 
+print('\n印出類別：\n')
+header = json.load(open('交通局class.json', 'r'))
+print([(i[0], header.get(i[0], '未知')) for i in result])
+##########################
+#      計算loss的區塊      #
+##########################
 
-error = []
-ans = json.load(open('ans.json', 'r'))
-for rationx in pyprind.prog_bar(range(1, 5000)):
-    for ratioy in range(1, 5000):
-        result = hybrid(rationx, ratioy)
-        myans = [i[0] for i in sorted(result.items(), key=lambda x:-x[1])[:10]]
+# error = []
+# ans = json.load(open('ans.json', 'r'))
+# for rationx in pyprind.prog_bar(range(1, 5000)):
+#     for ratioy in range(1, 5000):
+#         result = hybrid(rationx, ratioy)
+#         myans = [i[0] for i in sorted(result.items(), key=lambda x:-x[1])[:10]]
 
-        thisError = 0
-        for a, my in zip(ans, myans):
-            if os.path.isfile('json/' + a + '-' + my + '.json'):
-                res = json.load(open('json/' + a + '-' + my + '.json','r'))
-            else:
-                res = requests.get('https://maps.googleapis.com/maps/api/distancematrix/json?units=imperial&origins={}&destinations={}&key=AIzaSyB20qKjF1ePtq9t1luvFd-433J41anlDGU'.format(name2add[a], name2add[my])).json()
-                json.dump(res, open('json/' + a + '-' + my + '.json','w'))
+#         thisError = 0
+#         for a, my in zip(ans, myans):
+#             if os.path.isfile('json/' + a + '-' + my + '.json'):
+#                 res = json.load(open('json/' + a + '-' + my + '.json','r'))
+#             else:
+#                 res = requests.get('https://maps.googleapis.com/maps/api/distancematrix/json?units=imperial&origins={}&destinations={}&key=AIzaSyB20qKjF1ePtq9t1luvFd-433J41anlDGU'.format(name2add[a], name2add[my])).json()
+#                 json.dump(res, open('json/' + a + '-' + my + '.json','w'))
 
-            try:
-                if res['rows'][0]['elements'][0]['status'] == 'OK':
-                    thisError += res['rows'][0]['elements'][0]['distance']['value']
-            except Exception as e:
-                # 代表有些景點是因為地址問題或其他因素，導致google查不到距離
-                pass
-        error.append(thisError)
-json.dump(error, open('error.json', 'w'))
+#             try:
+#                 if res['rows'][0]['elements'][0]['status'] == 'OK':
+#                     thisError += res['rows'][0]['elements'][0]['distance']['value']
+#             except Exception as e:
+#                 # 代表有些景點是因為地址問題或其他因素，導致google查不到距離
+#                 pass
+#         error.append(thisError)
+# json.dump(error, open('error.json', 'w'))
