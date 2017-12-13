@@ -12,7 +12,8 @@ Get all tripadvisor data:
 2. Pull & RUN Container:
   * Download MongoDb container which has Tourist attraction recommendation model
     1. `docker pull davidtnfsh/iscommongo`
-    2. `docker run -itd --name ASYOUWISH davidtnfsh/iscommongo`
+    2. `docker run -itd --name ASYOUWISH_DB davidtnfsh/iscommongo`
+    3. `docker exec -it ASYOUWISH_DB bash`
     4. `mongorestore -d nlp --drop /dump/nlp/kcm.bson`
     5. `ifconfig`
       * Look up IP in  eth0 -> inet addr
