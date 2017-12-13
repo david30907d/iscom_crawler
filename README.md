@@ -23,7 +23,7 @@ Get all tripadvisor data:
       2. `docker run -itd --name ASYOUWISH -ip PORT:8000 davidtnfsh/iscom`
       3. `docker exec -it ASYOUWISH bash`
       4. `cd /ISAPI`
-      5. `vim /ISAPI/settings.py` ASSIGNE container ip to VARIABLE IP at the second-last line of settings.py 
+      5. `vim ISAPI/settings.py` ASSIGNE container ip to VARIABLE IP at the second-last line of settings.py 
       6. `nohup python3 manage.py runserver 0.0.0.0:8000 &`
 
 ## API Usage and Results
